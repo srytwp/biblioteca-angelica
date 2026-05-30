@@ -8,19 +8,13 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --gold: #d8b76a;
-      --old-gold: #9b7a32;
       --cream: #f7ead0;
       --wine: #36070d;
       --dark-wine: #160306;
-      --wood: #2a1308;
       --black: #060505;
     }
 
@@ -36,7 +30,7 @@
       min-height: 100vh;
       position: relative;
       background:
-        linear-gradient(rgba(3, 2, 2, 0.5), rgba(3, 2, 2, 0.88)),
+        linear-gradient(rgba(3, 2, 2, 0.58), rgba(3, 2, 2, 0.9)),
         url('https://images.unsplash.com/photo-1519219788971-8d9797e0928e?auto=format&fit=crop&w=1800&q=80');
       background-size: cover;
       background-position: center;
@@ -125,16 +119,7 @@
     .subtitle {
       margin-top: 10px;
       font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-      letter-spacing: 1px;
       color: #ead9b6;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 28px;
     }
 
     button, label.upload-label {
@@ -157,9 +142,15 @@
       border-color: rgba(216, 183, 106, 0.9);
     }
 
-    #pdfInput {
-      display: none;
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
     }
+
+    #pdfInput { display: none; }
 
     .castle-layout {
       position: relative;
@@ -167,20 +158,21 @@
       max-width: 1280px;
       margin: auto;
       display: grid;
-      grid-template-columns: 1fr 320px;
+      grid-template-columns: 1fr 340px;
       gap: 28px;
       align-items: start;
+    }
+
+    .library-hall, .side-panel {
+      border: 1px solid rgba(216,183,106,0.28);
+      border-radius: 32px;
+      background: rgba(9, 4, 4, 0.82);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.75), inset 0 0 70px rgba(216,183,106,0.04);
     }
 
     .library-hall {
       min-height: 640px;
       padding: 30px;
-      border: 1px solid rgba(216,183,106,0.28);
-      border-radius: 32px;
-      background:
-        linear-gradient(135deg, rgba(13,5,4,0.92), rgba(38,13,9,0.82)),
-        repeating-linear-gradient(90deg, rgba(216,183,106,0.03) 0 1px, transparent 1px 42px);
-      box-shadow: 0 30px 90px rgba(0,0,0,0.75), inset 0 0 70px rgba(216,183,106,0.04);
       perspective: 1400px;
     }
 
@@ -201,10 +193,7 @@
       letter-spacing: 2px;
     }
 
-    .book-count {
-      color: #cdbb97;
-      font-size: 1.1rem;
-    }
+    .book-count { color: #cdbb97; font-size: 1.1rem; }
 
     .shelves {
       display: grid;
@@ -236,6 +225,7 @@
       flex-direction: column;
       justify-content: space-between;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .book-card.opening .book-cover,
@@ -254,10 +244,7 @@
       pointer-events: none;
     }
 
-    .book-cover::after {
-      inset: 28px;
-      border-color: rgba(216,183,106,0.18);
-    }
+    .book-cover::after { inset: 28px; border-color: rgba(216,183,106,0.18); }
 
     .book-monogram {
       font-family: 'Cinzel', serif;
@@ -291,10 +278,7 @@
       text-align: center;
     }
 
-    .book-pages p {
-      font-size: 1.08rem;
-      line-height: 1.35;
-    }
+    .book-pages p { font-size: 1.08rem; line-height: 1.35; }
 
     .open-book-btn {
       margin-top: 14px;
@@ -306,10 +290,6 @@
     }
 
     .side-panel {
-      border: 1px solid rgba(216,183,106,0.28);
-      border-radius: 32px;
-      background: rgba(9, 4, 4, 0.78);
-      box-shadow: 0 30px 70px rgba(0,0,0,0.65), inset 0 0 45px rgba(216,183,106,0.04);
       padding: 24px;
       position: sticky;
       top: 24px;
@@ -317,7 +297,7 @@
     }
 
     .window {
-      height: 260px;
+      height: 230px;
       border: 1px solid rgba(216,183,106,0.35);
       border-radius: 180px 180px 18px 18px;
       position: relative;
@@ -352,29 +332,33 @@
       to { transform: translateY(20px); }
     }
 
-    .letter {
-      border-top: 1px solid rgba(216,183,106,0.24);
-      padding-top: 22px;
+    .couple-frame {
+      margin: 20px auto 26px;
+      text-align: center;
+      max-width: 420px;
+      border: 1px solid rgba(216,183,106,0.38);
+      border-radius: 22px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
     }
 
-    .letter h3 {
-      font-family: 'Cinzel', serif;
+    .couple-frame img {
+      width: 100%;
+      height: 330px;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 16px;
+      border: 1px solid rgba(216,183,106,0.35);
+      filter: grayscale(100%) contrast(1.05) brightness(0.86);
+      box-shadow: 0 0 30px rgba(216,183,106,.22);
+    }
+
+    .couple-frame p {
+      margin-top: 10px;
       color: var(--gold);
-      font-size: 1.25rem;
-      margin-bottom: 12px;
-      letter-spacing: 1px;
-    }
-
-    .letter p {
-      font-size: 1.12rem;
-      line-height: 1.62;
-      color: #eadcc1;
-    }
-
-    .signature {
-      margin-top: 18px;
-      color: var(--gold);
-      font-size: 1.3rem;
+      font-style: italic;
+      font-size: 1.08rem;
     }
 
     .candles {
@@ -404,8 +388,7 @@
       height: 32px;
       transform: translateX(-50%);
       background: radial-gradient(circle at 50% 70%, #fff8ad 0%, #f7b733 36%, #d15a1d 70%, transparent 72%);
-      border-radius: 50% 50% 50% 50%;
-      filter: blur(0.2px);
+      border-radius: 50%;
       animation: flicker .12s infinite alternate;
       box-shadow: 0 0 22px #e98b2b, 0 0 45px rgba(216,183,106,0.38);
     }
@@ -413,6 +396,31 @@
     @keyframes flicker {
       from { transform: translateX(-50%) rotate(-3deg) scale(1); opacity: .86; }
       to { transform: translateX(-50%) rotate(4deg) scale(1.08); opacity: 1; }
+    }
+
+    .letter {
+      border-top: 1px solid rgba(216,183,106,0.24);
+      padding-top: 22px;
+    }
+
+    .letter h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    .letter p {
+      font-size: 1.12rem;
+      line-height: 1.62;
+      color: #eadcc1;
+    }
+
+    .signature {
+      margin-top: 18px;
+      color: var(--gold);
+      font-size: 1.3rem;
     }
 
     .empty-state {
@@ -434,82 +442,7 @@
       margin-bottom: 10px;
     }
 
-    .hidden {
-      display: none;
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 99;
-      background: rgba(0,0,0,0.82);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      width: min(1100px, 96vw);
-      height: min(760px, 88vh);
-      border: 1px solid rgba(216,183,106,0.55);
-      border-radius: 20px;
-      background: #100605;
-      overflow: hidden;
-      box-shadow: 0 0 80px rgba(0,0,0,0.9), 0 0 35px rgba(216,183,106,0.15);
-      position: relative;
-    }
-
-    .modal-bar {
-      height: 54px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      background: linear-gradient(90deg, #2a0b07, #140403);
-      border-bottom: 1px solid rgba(216,183,106,0.3);
-      color: var(--gold);
-      font-family: 'Cinzel', serif;
-      font-size: 0.9rem;
-      gap: 12px;
-    }
-
-    .modal-bar span {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .modal-bar button {
-      padding: 8px 14px;
-      font-size: 0.75rem;
-    }
-
-    iframe {
-      width: 100%;
-      height: calc(100% - 54px);
-      border: none;
-      background: #1c1c1c;
-    }
-
-    .music-note {
-      position: fixed;
-      right: 22px;
-      bottom: 18px;
-      z-index: 20;
-      color: rgba(216,183,106,0.8);
-      font-family: 'Cinzel', serif;
-      font-size: 0.85rem;
-      background: rgba(0,0,0,0.45);
-      border: 1px solid rgba(216,183,106,0.3);
-      border-radius: 999px;
-      padding: 9px 14px;
-      backdrop-filter: blur(8px);
-    }
+    .hidden { display: none; }
 
     .intro-modal {
       position: fixed;
@@ -553,28 +486,47 @@
       filter: drop-shadow(0 0 14px rgba(216,183,106,0.35));
     }
 
-    .couple-frame {
-      margin-bottom: 22px;
-      border: 1px solid rgba(216,183,106,0.38);
-      border-radius: 22px;
-      padding: 10px;
-      background: rgba(255,255,255,0.03);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: rgba(0,0,0,0.82);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
-    .couple-frame img {
-      width: 100%;
-      height: 310px;
-      object-fit: cover;
-      object-position: center;
-      border-radius: 16px;
-      filter: grayscale(100%) contrast(1.05) brightness(0.86);
+    .modal.active { display: flex; }
+
+    .modal-content {
+      width: min(1100px, 96vw);
+      height: min(760px, 88vh);
+      border: 1px solid rgba(216,183,106,0.55);
+      border-radius: 20px;
+      background: #100605;
+      overflow: hidden;
+      box-shadow: 0 0 80px rgba(0,0,0,0.9), 0 0 35px rgba(216,183,106,0.15);
     }
 
-    .couple-frame figcaption {
-      margin-top: 10px;
+    .modal-bar {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: linear-gradient(90deg, #2a0b07, #140403);
+      border-bottom: 1px solid rgba(216,183,106,0.3);
       color: var(--gold);
-      font-size: 1.1rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      gap: 12px;
+    }
+
+    .modal-bar span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .reader-actions {
@@ -589,34 +541,39 @@
       font-size: 0.72rem;
     }
 
-    @media (max-width: 980px) {
-      .castle-layout {
-        grid-template-columns: 1fr;
-      }
+    iframe {
+      width: 100%;
+      height: calc(100% - 54px);
+      border: none;
+      background: #1c1c1c;
+    }
 
-      .side-panel {
-        position: relative;
-        top: auto;
-      }
+    .music-note {
+      position: fixed;
+      right: 22px;
+      bottom: 18px;
+      z-index: 20;
+      color: rgba(216,183,106,0.8);
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(216,183,106,0.3);
+      border-radius: 999px;
+      padding: 9px 14px;
+      backdrop-filter: blur(8px);
+    }
+
+    @media (max-width: 980px) {
+      .castle-layout { grid-template-columns: 1fr; }
+      .side-panel { position: relative; top: auto; }
     }
 
     @media (max-width: 560px) {
-      .scene {
-        padding: 22px 12px 70px;
-      }
-
-      .library-hall, .side-panel {
-        border-radius: 22px;
-        padding: 18px;
-      }
-
-      .hall-title {
-        display: block;
-      }
-
-      .book-count {
-        margin-top: 8px;
-      }
+      .scene { padding: 22px 12px 70px; }
+      .library-hall, .side-panel { border-radius: 22px; padding: 18px; }
+      .hall-title { display: block; }
+      .book-count { margin-top: 8px; }
+      .couple-frame img { height: 270px; }
     }
   </style>
 </head>
@@ -658,7 +615,7 @@
         <div class="empty-state" id="emptyState">
           <div>
             <h3>Sua biblioteca está esperando o primeiro livro</h3>
-            <p>Clique em “Adicionar livros em PDF” e escolha os arquivos que deseja presentear.</p>
+            <p>Clique em “Adicionar livros em PDF” e escolha os arquivos que deseja abrir neste navegador.</p>
           </div>
         </div>
 
@@ -672,7 +629,7 @@
 
         <figure class="couple-frame">
           <img src="foto-casal.jpg" alt="Foto especial de Cauã e Angélica">
-          <figcaption>Nossa memória guardada no castelo</figcaption>
+          <p>Nossa memória guardada neste castelo.</p>
         </figure>
 
         <div class="candles">
@@ -713,7 +670,6 @@
 
   <div class="music-note" id="musicStatus">Piano desligado</div>
 
-
   <script>
     const rain = document.getElementById('rain');
     const pdfInput = document.getElementById('pdfInput');
@@ -738,7 +694,7 @@
     let currentBookUrl = '';
 
     function createRain() {
-      for (let i = 0; i < 90; i++) {
+      for (let i = 0; i < 95; i++) {
         const drop = document.createElement('div');
         drop.className = 'drop';
         drop.style.left = Math.random() * 100 + 'vw';
@@ -763,7 +719,7 @@
     }
 
     function cleanFileName(name) {
-      return name.replace('.pdf', '').replaceAll('_', ' ').replaceAll('-', ' ');
+      return name.replace(/\.pdf$/i, '').replaceAll('_', ' ').replaceAll('-', ' ');
     }
 
     function addBook(file) {
@@ -809,14 +765,13 @@
     }
 
     openNewTab.addEventListener('click', () => {
-      if (currentBookUrl) {
-        window.open(currentBookUrl, '_blank');
-      }
+      if (currentBookUrl) window.open(currentBookUrl, '_blank');
     });
 
     closeModal.addEventListener('click', () => {
       readerModal.classList.remove('active');
       pdfViewer.src = '';
+      currentBookUrl = '';
       document.querySelectorAll('.book-card').forEach(card => card.classList.remove('opening'));
     });
 
@@ -824,6 +779,7 @@
       if (event.target === readerModal) {
         readerModal.classList.remove('active');
         pdfViewer.src = '';
+        currentBookUrl = '';
         document.querySelectorAll('.book-card').forEach(card => card.classList.remove('opening'));
       }
     });
@@ -846,7 +802,7 @@
       filter.frequency.setValueAtTime(1100, startTime);
 
       gain.gain.setValueAtTime(0.0001, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.16, startTime + 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.14, startTime + 0.06);
       gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
 
       osc.connect(filter);
@@ -861,10 +817,10 @@
       if (!audioContext || !musicOn) return;
 
       const now = audioContext.currentTime;
-      const notes = [261.63, 329.63, 392.00, 523.25, 493.88, 392.00, 329.63, 293.66];
+      const melody = [261.63, 329.63, 392.00, 523.25, 493.88, 392.00, 329.63, 293.66];
       const bass = [130.81, 164.81, 196.00, 174.61];
 
-      notes.forEach((note, index) => {
+      melody.forEach((note, index) => {
         playSoftNote(note, now + index * 0.72, 0.62);
       });
 
@@ -882,6 +838,7 @@
       musicBtn.textContent = 'Pausar piano';
       musicStatus.textContent = 'Piano clássico tocando';
       playClassicalLoop();
+      clearInterval(pianoTimer);
       pianoTimer = setInterval(playClassicalLoop, 5600);
     }
 
@@ -893,11 +850,8 @@
     }
 
     musicBtn.addEventListener('click', () => {
-      if (!musicOn) {
-        startPiano();
-      } else {
-        stopPiano();
-      }
+      if (!musicOn) startPiano();
+      else stopPiano();
     });
 
     enterExperienceBtn.addEventListener('click', () => {
