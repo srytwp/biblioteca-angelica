@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca da Angélica | Castelo Particular</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gold: #d8b76a;
+      --old-gold: #9b7a32;
+      --cream: #f7ead0;
+      --wine: #36070d;
+      --dark-wine: #160306;
+      --wood: #2a1308;
+      --black: #060505;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--cream);
+      background: radial-gradient(circle at center, #28120b 0%, #090403 55%, #000 100%);
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .scene {
+      min-height: 100vh;
+      position: relative;
+      background:
+        linear-gradient(rgba(3, 2, 2, 0.5), rgba(3, 2, 2, 0.88)),
+        url('https://images.unsplash.com/photo-1519219788971-8d9797e0928e?auto=format&fit=crop&w=1800&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      padding: 34px 22px 80px;
+      isolation: isolate;
+    }
+
+    .scene::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(216, 183, 106, 0.18), transparent 30%),
+        radial-gradient(circle at 10% 100%, rgba(82, 8, 20, 0.45), transparent 36%),
+        radial-gradient(circle at 90% 100%, rgba(82, 8, 20, 0.35), transparent 35%);
+      z-index: -1;
+    }
+
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 180px #000, inset 0 0 80px #000;
+      z-index: 10;
+    }
+
+    .rain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+      opacity: 0.5;
+    }
+
+    .drop {
+      position: absolute;
+      top: -120px;
+      width: 1px;
+      height: 95px;
+      background: linear-gradient(transparent, rgba(219, 231, 255, 0.75));
+      animation: rainFall linear infinite;
+    }
+
+    @keyframes rainFall {
+      from { transform: translateY(-120px); }
+      to { transform: translateY(120vh); }
+    }
+
+    header {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 1000px;
+      margin: 0 auto 36px;
+      padding: 32px 18px 24px;
+    }
+
+    .crest {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 16px;
+      border: 1px solid rgba(216, 183, 106, 0.75);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, rgba(216,183,106,0.15), rgba(20,4,6,0.7));
+      box-shadow: 0 0 45px rgba(216,183,106,0.18);
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: var(--gold);
+      text-shadow: 0 0 22px rgba(216, 183, 106, 0.55);
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.5rem, 7vw, 6.5rem);
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-transform: uppercase;
+      text-shadow: 0 0 35px rgba(216, 183, 106, 0.35), 0 8px 18px #000;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      letter-spacing: 1px;
+      color: #ead9b6;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    button, label.upload-label {
+      border: 1px solid rgba(216, 183, 106, 0.55);
+      color: var(--cream);
+      background: linear-gradient(145deg, #5b2b12, #210806 58%, #090302);
+      padding: 13px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 1px;
+      font-size: 0.92rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45), inset 0 0 18px rgba(216,183,106,0.08);
+      transition: transform .25s ease, box-shadow .25s ease, border .25s ease;
+    }
+
+    button:hover, label.upload-label:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 34px rgba(0,0,0,0.55), 0 0 20px rgba(216,183,106,0.2);
+      border-color: rgba(216, 183, 106, 0.9);
+    }
+
+    #pdfInput {
+      display: none;
+    }
+
+    .castle-layout {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .library-hall {
+      min-height: 640px;
+      padding: 30px;
+      border: 1px solid rgba(216,183,106,0.28);
+      border-radius: 32px;
+      background:
+        linear-gradient(135deg, rgba(13,5,4,0.92), rgba(38,13,9,0.82)),
+        repeating-linear-gradient(90deg, rgba(216,183,106,0.03) 0 1px, transparent 1px 42px);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.75), inset 0 0 70px rgba(216,183,106,0.04);
+      perspective: 1400px;
+    }
+
+    .hall-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid rgba(216,183,106,0.22);
+      padding-bottom: 18px;
+    }
+
+    .hall-title h2 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      letter-spacing: 2px;
+    }
+
+    .book-count {
+      color: #cdbb97;
+      font-size: 1.1rem;
+    }
+
+    .shelves {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 28px;
+      transform-style: preserve-3d;
+    }
+
+    .book-card {
+      height: 280px;
+      position: relative;
+      transform-style: preserve-3d;
+      perspective: 1100px;
+    }
+
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px 22px 22px 12px;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.55), transparent 16%),
+        linear-gradient(135deg, #4d080f, #190304 58%, #0a0101);
+      border: 1px solid rgba(216,183,106,0.45);
+      box-shadow: 14px 18px 30px rgba(0,0,0,0.55), inset 8px 0 12px rgba(0,0,0,0.45), inset 0 0 30px rgba(216,183,106,0.05);
+      transform-origin: left;
+      transition: transform 0.9s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .book-card.opening .book-cover,
+    .book-card:hover .book-cover {
+      transform: rotateY(-58deg);
+      box-shadow: 22px 18px 38px rgba(0,0,0,0.7), 0 0 25px rgba(216,183,106,0.15);
+    }
+
+    .book-cover::before,
+    .book-cover::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(216,183,106,0.42);
+      border-radius: 8px 18px 18px 8px;
+      pointer-events: none;
+    }
+
+    .book-cover::after {
+      inset: 28px;
+      border-color: rgba(216,183,106,0.18);
+    }
+
+    .book-monogram {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      color: rgba(216,183,106,0.9);
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    .book-name {
+      position: relative;
+      z-index: 2;
+      color: var(--cream);
+      font-size: 1.18rem;
+      text-align: center;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .book-pages {
+      position: absolute;
+      inset: 8px 8px 8px 16px;
+      border-radius: 10px 18px 18px 10px;
+      background: linear-gradient(90deg, #d8c7a4, #fff5d8 52%, #c4a872);
+      transform: translateZ(-8px);
+      box-shadow: inset -16px 0 24px rgba(93,59,21,0.28);
+      display: grid;
+      place-items: center;
+      color: #2b1208;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .book-pages p {
+      font-size: 1.08rem;
+      line-height: 1.35;
+    }
+
+    .open-book-btn {
+      margin-top: 14px;
+      background: linear-gradient(135deg, #271005, #5b2b12);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      color: #fff2d2;
+    }
+
+    .side-panel {
+      border: 1px solid rgba(216,183,106,0.28);
+      border-radius: 32px;
+      background: rgba(9, 4, 4, 0.78);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.65), inset 0 0 45px rgba(216,183,106,0.04);
+      padding: 24px;
+      position: sticky;
+      top: 24px;
+      overflow: hidden;
+    }
+
+    .window {
+      height: 260px;
+      border: 1px solid rgba(216,183,106,0.35);
+      border-radius: 180px 180px 18px 18px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(10,10,22,0.35), rgba(5,3,5,0.9)),
+        url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80');
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 24px;
+    }
+
+    .window::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 48%, rgba(216,183,106,0.35) 49%, rgba(216,183,106,0.35) 51%, transparent 52%),
+        linear-gradient(0deg, transparent 48%, rgba(216,183,106,0.25) 49%, rgba(216,183,106,0.25) 51%, transparent 52%);
+    }
+
+    .window-rain {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(115deg, transparent 0 16px, rgba(255,255,255,0.12) 17px 18px);
+      animation: windowRain 1.2s linear infinite;
+      opacity: 0.45;
+    }
+
+    @keyframes windowRain {
+      from { transform: translateY(-20px); }
+      to { transform: translateY(20px); }
+    }
+
+    .letter {
+      border-top: 1px solid rgba(216,183,106,0.24);
+      padding-top: 22px;
+    }
+
+    .letter h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    .letter p {
+      font-size: 1.12rem;
+      line-height: 1.62;
+      color: #eadcc1;
+    }
+
+    .signature {
+      margin-top: 18px;
+      color: var(--gold);
+      font-size: 1.3rem;
+    }
+
+    .candles {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin: 24px 0;
+    }
+
+    .candle {
+      width: 26px;
+      height: 82px;
+      background: linear-gradient(90deg, #d7c0a0, #fff0ca, #b8956b);
+      border-radius: 8px 8px 4px 4px;
+      position: relative;
+      box-shadow: inset -5px 0 8px rgba(74,42,16,0.22);
+    }
+
+    .candle:nth-child(2) { height: 106px; }
+    .candle:nth-child(3) { height: 70px; }
+
+    .flame {
+      position: absolute;
+      left: 50%;
+      top: -32px;
+      width: 18px;
+      height: 32px;
+      transform: translateX(-50%);
+      background: radial-gradient(circle at 50% 70%, #fff8ad 0%, #f7b733 36%, #d15a1d 70%, transparent 72%);
+      border-radius: 50% 50% 50% 50%;
+      filter: blur(0.2px);
+      animation: flicker .12s infinite alternate;
+      box-shadow: 0 0 22px #e98b2b, 0 0 45px rgba(216,183,106,0.38);
+    }
+
+    @keyframes flicker {
+      from { transform: translateX(-50%) rotate(-3deg) scale(1); opacity: .86; }
+      to { transform: translateX(-50%) rotate(4deg) scale(1.08); opacity: 1; }
+    }
+
+    .empty-state {
+      min-height: 380px;
+      border: 1px dashed rgba(216,183,106,0.32);
+      border-radius: 26px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 34px;
+      color: #d7c5a2;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .empty-state h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: rgba(0,0,0,0.82);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      width: min(1100px, 96vw);
+      height: min(760px, 88vh);
+      border: 1px solid rgba(216,183,106,0.55);
+      border-radius: 20px;
+      background: #100605;
+      overflow: hidden;
+      box-shadow: 0 0 80px rgba(0,0,0,0.9), 0 0 35px rgba(216,183,106,0.15);
+      position: relative;
+    }
+
+    .modal-bar {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: linear-gradient(90deg, #2a0b07, #140403);
+      border-bottom: 1px solid rgba(216,183,106,0.3);
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      gap: 12px;
+    }
+
+    .modal-bar span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-bar button {
+      padding: 8px 14px;
+      font-size: 0.75rem;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100% - 54px);
+      border: none;
+      background: #1c1c1c;
+    }
+
+    .music-note {
+      position: fixed;
+      right: 22px;
+      bottom: 18px;
+      z-index: 20;
+      color: rgba(216,183,106,0.8);
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(216,183,106,0.3);
+      border-radius: 999px;
+      padding: 9px 14px;
+      backdrop-filter: blur(8px);
+    }
+
+    @media (max-width: 980px) {
+      .castle-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel {
+        position: relative;
+        top: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .scene {
+        padding: 22px 12px 70px;
+      }
+
+      .library-hall, .side-panel {
+        border-radius: 22px;
+        padding: 18px;
+      }
+
+      .hall-title {
+        display: block;
+      }
+
+      .book-count {
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rain" id="rain"></div>
+  <div class="vignette"></div>
+
+  <main class="scene">
+    <header>
+      <div class="crest">A</div>
+      <h1>Biblioteca da Angélica</h1>
+      <p class="subtitle">Um castelo particular para guardar livros, memórias e histórias que combinam com você.</p>
+
+      <div class="controls">
+        <label class="upload-label" for="pdfInput">Adicionar livros em PDF</label>
+        <button id="musicBtn">Ativar piano</button>
+        <button id="clearBtn">Limpar biblioteca</button>
+        <input type="file" id="pdfInput" accept="application/pdf,.pdf" multiple />
+      </div>
+    </header>
+
+    <section class="castle-layout">
+      <div class="library-hall">
+        <div class="hall-title">
+          <h2>Estantes do Castelo</h2>
+          <div class="book-count" id="bookCount">Nenhum livro adicionado ainda</div>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+          <div>
+            <h3>Sua biblioteca está esperando o primeiro livro</h3>
+            <p>Clique em “Adicionar livros em PDF” e escolha os arquivos que deseja presentear.</p>
+          </div>
+        </div>
+
+        <div class="shelves" id="shelves"></div>
+      </div>
+
+      <aside class="side-panel">
+        <div class="window">
+          <div class="window-rain"></div>
+        </div>
+
+        <div class="candles">
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+        </div>
+
+        <div class="letter">
+          <h3>Para Angélica</h3>
+          <p>
+            Eu poderia te dar apenas um presente, mas quis criar um lugar.
+            Uma biblioteca só sua, com chuva na janela, velas acesas e livros esperando por você.
+          </p>
+          <br />
+          <p>
+            Que cada página aberta aqui seja uma lembrança bonita deste dia.
+            E que este pequeno castelo guarde, em silêncio, o carinho com que ele foi feito.
+          </p>
+          <div class="signature">Com carinho,<br />Cauã</div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div class="modal" id="readerModal">
+    <div class="modal-content">
+      <div class="modal-bar">
+        <span id="modalTitle">Livro</span>
+        <button id="closeModal">Fechar</button>
+      </div>
+      <iframe id="pdfViewer"></iframe>
+    </div>
+  </div>
+
+  <div class="music-note" id="musicStatus">Piano desligado</div>
+
+  <audio id="piano" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=relaxing-piano-music-11701.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const rain = document.getElementById('rain');
+    const pdfInput = document.getElementById('pdfInput');
+    const shelves = document.getElementById('shelves');
+    const emptyState = document.getElementById('emptyState');
+    const bookCount = document.getElementById('bookCount');
+    const readerModal = document.getElementById('readerModal');
+    const pdfViewer = document.getElementById('pdfViewer');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModal = document.getElementById('closeModal');
+    const musicBtn = document.getElementById('musicBtn');
+    const piano = document.getElementById('piano');
+    const musicStatus = document.getElementById('musicStatus');
+    const clearBtn = document.getElementById('clearBtn');
+
+    let books = [];
+    let musicOn = false;
+
+    function createRain() {
+      for (let i = 0; i < 90; i++) {
+        const drop = document.createElement('div');
+        drop.className = 'drop';
+        drop.style.left = Math.random() * 100 + 'vw';
+        drop.style.animationDuration = (Math.random() * 0.9 + 0.45) + 's';
+        drop.style.animationDelay = Math.random() * 3 + 's';
+        drop.style.opacity = Math.random() * 0.55 + 0.2;
+        rain.appendChild(drop);
+      }
+    }
+
+    function updateCount() {
+      if (books.length === 0) {
+        bookCount.textContent = 'Nenhum livro adicionado ainda';
+        emptyState.classList.remove('hidden');
+      } else if (books.length === 1) {
+        bookCount.textContent = '1 livro guardado';
+        emptyState.classList.add('hidden');
+      } else {
+        bookCount.textContent = books.length + ' livros guardados';
+        emptyState.classList.add('hidden');
+      }
+    }
+
+    function cleanFileName(name) {
+      return name.replace('.pdf', '').replaceAll('_', ' ').replaceAll('-', ' ');
+    }
+
+    function addBook(file) {
+      const url = URL.createObjectURL(file);
+      const book = { name: file.name, title: cleanFileName(file.name), url };
+      books.push(book);
+
+      const card = document.createElement('div');
+      card.className = 'book-card';
+
+      card.innerHTML = `
+        <div class="book-pages">
+          <div>
+            <p>Abra este livro como quem entra em uma sala secreta do castelo.</p>
+            <button class="open-book-btn">Ler agora</button>
+          </div>
+        </div>
+        <div class="book-cover">
+          <div class="book-monogram">A</div>
+          <div class="book-name">${book.title}</div>
+        </div>
+      `;
+
+      card.querySelector('.open-book-btn').addEventListener('click', () => {
+        card.classList.add('opening');
+        setTimeout(() => openReader(book), 550);
+      });
+
+      card.querySelector('.book-cover').addEventListener('click', () => {
+        card.classList.add('opening');
+        setTimeout(() => openReader(book), 550);
+      });
+
+      shelves.appendChild(card);
+      updateCount();
+    }
+
+    function openReader(book) {
+      modalTitle.textContent = book.title;
+      pdfViewer.src = book.url;
+      readerModal.classList.add('active');
+    }
+
+    closeModal.addEventListener('click', () => {
+      readerModal.classList.remove('active');
+      pdfViewer.src = '';
+      document.querySelectorAll('.book-card').forEach(card => card.classList.remove('opening'));
+    });
+
+    readerModal.addEventListener('click', (event) => {
+      if (event.target === readerModal) {
+        readerModal.classList.remove('active');
+        pdfViewer.src = '';
+        document.querySelectorAll('.book-card').forEach(card => card.classList.remove('opening'));
+      }
+    });
+
+    pdfInput.addEventListener('change', () => {
+      Array.from(pdfInput.files).forEach(file => addBook(file));
+      pdfInput.value = '';
+    });
+
+    musicBtn.addEventListener('click', async () => {
+      try {
+        if (!musicOn) {
+          piano.volume = 0.28;
+          await piano.play();
+          musicOn = true;
+          musicBtn.textContent = 'Pausar piano';
+          musicStatus.textContent = 'Piano tocando';
+        } else {
+          piano.pause();
+          musicOn = false;
+          musicBtn.textContent = 'Ativar piano';
+          musicStatus.textContent = 'Piano desligado';
+        }
+      } catch (error) {
+        musicStatus.textContent = 'Clique novamente para ativar o piano';
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      books.forEach(book => URL.revokeObjectURL(book.url));
+      books = [];
+      shelves.innerHTML = '';
+      updateCount();
+    });
+
+    createRain();
+    updateCount();
+  </script>
+</body>
+</html>
