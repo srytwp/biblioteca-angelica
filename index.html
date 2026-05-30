@@ -511,6 +511,84 @@
       backdrop-filter: blur(8px);
     }
 
+    .intro-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: radial-gradient(circle at center, rgba(54,7,13,0.78), rgba(0,0,0,0.94));
+      backdrop-filter: blur(10px);
+    }
+
+    .intro-card {
+      width: min(620px, 94vw);
+      border: 1px solid rgba(216,183,106,0.55);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(20,5,6,0.96), rgba(4,2,2,0.98));
+      box-shadow: 0 0 90px rgba(0,0,0,0.85), 0 0 38px rgba(216,183,106,0.14);
+      padding: 34px;
+      text-align: center;
+    }
+
+    .intro-card h2 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: clamp(1.7rem, 5vw, 3rem);
+      margin-bottom: 14px;
+      letter-spacing: 2px;
+    }
+
+    .intro-card p {
+      color: #eadcc1;
+      font-size: 1.2rem;
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+
+    .headphone-icon {
+      font-size: 3rem;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 0 14px rgba(216,183,106,0.35));
+    }
+
+    .couple-frame {
+      margin-bottom: 22px;
+      border: 1px solid rgba(216,183,106,0.38);
+      border-radius: 22px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    }
+
+    .couple-frame img {
+      width: 100%;
+      height: 310px;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 16px;
+      filter: grayscale(100%) contrast(1.05) brightness(0.86);
+    }
+
+    .couple-frame figcaption {
+      margin-top: 10px;
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+
+    .reader-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .reader-actions button {
+      padding: 8px 14px;
+      font-size: 0.72rem;
+    }
+
     @media (max-width: 980px) {
       .castle-layout {
         grid-template-columns: 1fr;
@@ -544,6 +622,15 @@
 </head>
 
 <body>
+  <div class="intro-modal" id="introModal">
+    <div class="intro-card">
+      <div class="headphone-icon">🎧</div>
+      <h2>Antes de entrar</h2>
+      <p>Use fones de ouvido para viver melhor a experiência: chuva, piano clássico suave, velas e a biblioteca particular da Angélica.</p>
+      <button id="enterExperienceBtn">Entrar na biblioteca</button>
+    </div>
+  </div>
+
   <div class="rain" id="rain"></div>
   <div class="vignette"></div>
 
@@ -583,6 +670,11 @@
           <div class="window-rain"></div>
         </div>
 
+        <figure class="couple-frame">
+          <img src="foto-casal.jpg" alt="Foto especial de Cauã e Angélica">
+          <figcaption>Nossa memória guardada no castelo</figcaption>
+        </figure>
+
         <div class="candles">
           <div class="candle"><div class="flame"></div></div>
           <div class="candle"><div class="flame"></div></div>
@@ -610,7 +702,10 @@
     <div class="modal-content">
       <div class="modal-bar">
         <span id="modalTitle">Livro</span>
-        <button id="closeModal">Fechar</button>
+        <div class="reader-actions">
+          <button id="openNewTab">Abrir em nova aba</button>
+          <button id="closeModal">Fechar</button>
+        </div>
       </div>
       <iframe id="pdfViewer"></iframe>
     </div>
@@ -618,9 +713,6 @@
 
   <div class="music-note" id="musicStatus">Piano desligado</div>
 
-  <audio id="piano" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=relaxing-piano-music-11701.mp3" type="audio/mpeg">
-  </audio>
 
   <script>
     const rain = document.getElementById('rain');
@@ -632,13 +724,18 @@
     const pdfViewer = document.getElementById('pdfViewer');
     const modalTitle = document.getElementById('modalTitle');
     const closeModal = document.getElementById('closeModal');
+    const openNewTab = document.getElementById('openNewTab');
     const musicBtn = document.getElementById('musicBtn');
-    const piano = document.getElementById('piano');
     const musicStatus = document.getElementById('musicStatus');
     const clearBtn = document.getElementById('clearBtn');
+    const introModal = document.getElementById('introModal');
+    const enterExperienceBtn = document.getElementById('enterExperienceBtn');
 
     let books = [];
     let musicOn = false;
+    let audioContext;
+    let pianoTimer;
+    let currentBookUrl = '';
 
     function createRain() {
       for (let i = 0; i < 90; i++) {
@@ -706,9 +803,16 @@
 
     function openReader(book) {
       modalTitle.textContent = book.title;
+      currentBookUrl = book.url;
       pdfViewer.src = book.url;
       readerModal.classList.add('active');
     }
+
+    openNewTab.addEventListener('click', () => {
+      if (currentBookUrl) {
+        window.open(currentBookUrl, '_blank');
+      }
+    });
 
     closeModal.addEventListener('click', () => {
       readerModal.classList.remove('active');
@@ -729,23 +833,76 @@
       pdfInput.value = '';
     });
 
-    musicBtn.addEventListener('click', async () => {
-      try {
-        if (!musicOn) {
-          piano.volume = 0.28;
-          await piano.play();
-          musicOn = true;
-          musicBtn.textContent = 'Pausar piano';
-          musicStatus.textContent = 'Piano tocando';
-        } else {
-          piano.pause();
-          musicOn = false;
-          musicBtn.textContent = 'Ativar piano';
-          musicStatus.textContent = 'Piano desligado';
-        }
-      } catch (error) {
-        musicStatus.textContent = 'Clique novamente para ativar o piano';
+    function playSoftNote(frequency, startTime, duration) {
+      if (!audioContext) return;
+
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const filter = audioContext.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(frequency, startTime);
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1100, startTime);
+
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.16, startTime + 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration + 0.08);
+    }
+
+    function playClassicalLoop() {
+      if (!audioContext || !musicOn) return;
+
+      const now = audioContext.currentTime;
+      const notes = [261.63, 329.63, 392.00, 523.25, 493.88, 392.00, 329.63, 293.66];
+      const bass = [130.81, 164.81, 196.00, 174.61];
+
+      notes.forEach((note, index) => {
+        playSoftNote(note, now + index * 0.72, 0.62);
+      });
+
+      bass.forEach((note, index) => {
+        playSoftNote(note, now + index * 1.44, 1.15);
+      });
+    }
+
+    function startPiano() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
+
+      musicOn = true;
+      musicBtn.textContent = 'Pausar piano';
+      musicStatus.textContent = 'Piano clássico tocando';
+      playClassicalLoop();
+      pianoTimer = setInterval(playClassicalLoop, 5600);
+    }
+
+    function stopPiano() {
+      musicOn = false;
+      musicBtn.textContent = 'Ativar piano';
+      musicStatus.textContent = 'Piano desligado';
+      clearInterval(pianoTimer);
+    }
+
+    musicBtn.addEventListener('click', () => {
+      if (!musicOn) {
+        startPiano();
+      } else {
+        stopPiano();
+      }
+    });
+
+    enterExperienceBtn.addEventListener('click', () => {
+      introModal.style.display = 'none';
+      startPiano();
     });
 
     clearBtn.addEventListener('click', () => {
