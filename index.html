@@ -432,6 +432,125 @@
       background: #1b1b1b;
     }
 
+    /* Abertura medieval: portas se abrindo */
+    .door-intro {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background:
+        radial-gradient(circle at center, rgba(215, 182, 106, 0.12), transparent 38%),
+        linear-gradient(180deg, #090606, #020202);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .door-intro.hidden {
+      pointer-events: none;
+    }
+
+    .door {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.55), rgba(0,0,0,0.08), rgba(0,0,0,0.5)),
+        repeating-linear-gradient(
+          90deg,
+          #241006 0px,
+          #34180b 34px,
+          #1b0a04 68px
+        );
+      border: 2px solid rgba(215,182,106,0.55);
+      box-shadow:
+        inset 0 0 90px rgba(0,0,0,0.95),
+        inset 0 0 24px rgba(215,182,106,0.08);
+      transition: transform 2s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .left-door {
+      left: 0;
+      transform-origin: left center;
+    }
+
+    .right-door {
+      right: 0;
+      transform-origin: right center;
+    }
+
+    .door::before {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border: 1px solid rgba(215,182,106,0.28);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .door::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 34px;
+      height: 34px;
+      border: 2px solid rgba(215,182,106,0.75);
+      border-radius: 50%;
+      background: radial-gradient(circle, #d7b66a, #4a260c 65%, #130704);
+      box-shadow: 0 0 18px rgba(215,182,106,0.22);
+    }
+
+    .left-door::after {
+      right: 32px;
+    }
+
+    .right-door::after {
+      left: 32px;
+    }
+
+    .door-intro.open .left-door {
+      transform: perspective(1200px) rotateY(105deg);
+    }
+
+    .door-intro.open .right-door {
+      transform: perspective(1200px) rotateY(-105deg);
+    }
+
+    .door-content {
+      position: relative;
+      z-index: 3;
+      width: min(90%, 520px);
+      text-align: center;
+      padding: 28px 22px;
+      border: 1px solid rgba(215,182,106,0.32);
+      border-radius: 28px;
+      background: rgba(0,0,0,0.38);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+    }
+
+    .door-content h2 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: clamp(2rem, 8vw, 4rem);
+      line-height: 1;
+      margin-bottom: 12px;
+      text-shadow: 0 12px 28px rgba(0,0,0,0.85);
+    }
+
+    .door-content p {
+      color: var(--text);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 4vw, 1.25rem);
+      line-height: 1.45;
+      margin-bottom: 18px;
+    }
+
+    .door-content button {
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
     @media (min-width: 720px) {
       .app {
         padding: 28px 22px 70px;
@@ -498,6 +617,17 @@
 </head>
 
 <body>
+  <div class="door-intro" id="doorIntro">
+    <div class="door left-door"></div>
+    <div class="door right-door"></div>
+
+    <div class="door-content">
+      <h2>Biblioteca da Angélica</h2>
+      <p>Coloque os fones de ouvido e toque para abrir as portas.</p>
+      <button id="enterDoor">Abrir as portas</button>
+    </div>
+  </div>
+
   <div class="rain" id="rain"></div>
 
   <main class="app">
@@ -618,6 +748,8 @@
     const pdfViewer = document.getElementById('pdfViewer');
     const openBookTab = document.getElementById('openBookTab');
     const closeReader = document.getElementById('closeReader');
+    const doorIntro = document.getElementById('doorIntro');
+    const enterDoor = document.getElementById('enterDoor');
 
     let localBooks = [];
     let currentBookUrl = '';
@@ -686,6 +818,19 @@
       bookGrid.appendChild(book);
       emptyLocal.style.display = 'none';
     }
+
+    enterDoor.addEventListener('click', () => {
+      doorIntro.classList.add('open');
+
+      setTimeout(() => {
+        doorIntro.classList.add('hidden');
+        doorIntro.style.display = 'none';
+
+        if (!musicStarted) {
+          startMusic();
+        }
+      }, 2000);
+    });
 
     playMusic.addEventListener('click', startMusic);
 
